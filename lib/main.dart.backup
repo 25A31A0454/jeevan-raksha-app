@@ -1,0 +1,202 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() {
+  runApp(const JeevanRakshaApp());
+}
+
+class JeevanRakshaApp extends StatelessWidget {
+  const JeevanRakshaApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'JEEVAN RAKSHA',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  Future<void> _openEmergencyDialer(BuildContext context) async {
+    try {
+      final opened = await launchUrl(
+        Uri(scheme: 'tel', path: '112'),
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!context.mounted || opened) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not open the phone dialer. If possible, call 112 directly.',
+          ),
+        ),
+      );
+    } on PlatformException {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Unable to open the phone dialer. If possible, call 112 directly.',
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'JEEVAN RAKSHA',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              'Emergency help, even offline.',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Keep essential emergency information ready '
+              'on your phone.',
+            ),
+            const SizedBox(height: 24),
+            Card(
+              color: Colors.red.shade50,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.health_and_safety,
+                      color: Colors.red,
+                      size: 42,
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Need emergency help?',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'For immediate danger, contact your local '
+                      'emergency services. In India, dial 112.',
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: () => _openEmergencyDialer(context),
+                        icon: const Icon(Icons.call),
+                        label: const Text('Open dialer for 112'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'This opens your phone dialer; you must confirm '
+                      'the call.',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Emergency resources',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            const ResourceTile(
+              icon: Icons.favorite,
+              title: 'CPR and cardiac emergencies',
+              subtitle: 'Learn what to do in an emergency',
+            ),
+            const ResourceTile(
+              icon: Icons.water_drop,
+              title: 'Severe bleeding',
+              subtitle: 'First-aid information',
+            ),
+            const ResourceTile(
+              icon: Icons.local_fire_department,
+              title: 'Burns',
+              subtitle: 'First-aid information',
+            ),
+            const ResourceTile(
+              icon: Icons.medical_information,
+              title: 'Other emergencies',
+              subtitle: 'Browse essential emergency topics',
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Prototype version: emergency instructions '
+              'must be reviewed by qualified medical professionals.',
+              style: TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ResourceTile extends StatelessWidget {
+  const ResourceTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: Icon(icon, color: Colors.red, size: 30),
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Emergency guide content will be added '
+                'in the next development stage.',
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
