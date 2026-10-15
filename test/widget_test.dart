@@ -1,55 +1,52 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 
-import 'package:jeevan_raksha/main.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jeevan_raksha_app/main.dart';
 
 void main() {
-  testWidgets('shows emergency information and available resources', (
+  testWidgets('Splash screen displays correctly', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const JeevanRakshaApp());
 
     expect(find.text('JEEVAN RAKSHA'), findsOneWidget);
-    expect(find.text('Emergency help, even offline.'), findsOneWidget);
-    expect(find.text('Need emergency help?'), findsOneWidget);
-    expect(find.text('Open dialer for 112'), findsOneWidget);
-    expect(find.byIcon(Icons.call), findsOneWidget);
-
+    expect(find.text('Get Started'), findsOneWidget);
     expect(
-      find.text(
-        'For immediate danger, contact your local emergency services. '
-        'In India, dial 112.',
-      ),
+      find.text('Made for a safer community'),
       findsOneWidget,
     );
-    await tester.scrollUntilVisible(
-      find.text('CPR and cardiac emergencies'),
-      300,
-    );
-    expect(find.text('CPR and cardiac emergencies'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Severe bleeding'), 300);
-    expect(find.text('Severe bleeding'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Burns'), 300);
-    expect(find.text('Burns'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Other emergencies'), 300);
-    expect(find.text('Other emergencies'), findsOneWidget);
   });
 
-  testWidgets('shows a placeholder when a resource is selected', (
+  testWidgets('Get Started opens the dashboard', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const JeevanRakshaApp());
 
-    await tester.scrollUntilVisible(find.text('Burns'), 300);
-    await tester.tap(find.text('Burns'));
-    await tester.pump();
+    await tester.tap(find.text('Get Started'));
+    await tester.pumpAndSettle();
 
     expect(
-      find.text(
-        'Emergency guide content will be added '
-        'in the next development stage.',
-      ),
+      find.text('Your safety, our priority.'),
       findsOneWidget,
     );
+    expect(find.text('Emergency SOS'), findsOneWidget);
+    expect(find.text('First Aid Guide'), findsOneWidget);
+    expect(find.text('Emergency Contacts'), findsOneWidget);
+    expect(find.text('Emergency Resources'), findsOneWidget);
+  });
+
+  testWidgets('First Aid Guide opens correctly', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const JeevanRakshaApp());
+
+    await tester.tap(find.text('Get Started'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('First Aid Guide'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('CPR and cardiac emergencies'), findsOneWidget);
+    expect(find.text('Severe bleeding'), findsOneWidget);
+    expect(find.text('Burns'), findsOneWidget);
   });
 }
